@@ -1,8 +1,7 @@
-import React from "react";
 import styled from "styled-components";
 import SidebarOption from "./SidebarOption";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 
 // Icons
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -17,24 +16,25 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Sidebar() {
-  const [channels] = useCollection(db.collection("Rooms"));
-
-  console.log(channels);
+  const [user] = useAuthState(auth);
+  const [channels] = useCollection(db.collection("rooms"));
 
   return (
     <SidebarContainer>
       <SidebarHeader>
         <SidebarInfo>
-          <h2>Mikez Garcia</h2>
+          <h2>{user.displayName}</h2>
           <h3>
             <FiberManualRecordIcon />
-            michaelgarcia@gmail.com
+            {user.email}
           </h3>
         </SidebarInfo>
         <CreateIcon />
       </SidebarHeader>
+
       <SidebarOption Icon={InsertCommentIcon} title="Threads" />
       <SidebarOption Icon={InboxIcon} title="Mentions & reactions" />
       <SidebarOption Icon={DraftsIcon} title="Saved items" />
@@ -47,6 +47,7 @@ export default function Sidebar() {
       <SidebarOption Icon={ExpandMoreIcon} title="Channels" />
       <hr />
       <SidebarOption Icon={AddIcon} title="Add Channel" addChannelOption />
+
       {channels?.docs.map((doc) => (
         <SidebarOption key={doc.id} id={doc.id} title={doc.data().name} />
       ))}

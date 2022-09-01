@@ -3,24 +3,29 @@ import styled from "styled-components";
 import Avatar from "@mui/material/Avatar";
 
 // Icons
-import SearchIcon from "@mui/icons-material/Search";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import SearchIcon from "@mui/icons-material/Search";
 import HelpIcon from "@mui/icons-material/Help";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 export default function Header() {
+  const [user] = useAuthState(auth);
+
   return (
     <HeaderContainer>
       <HeaderLeft>
         <HeaderAvatar
-          src="https://i.pinimg.com/564x/dc/07/3a/dc073a46b3938ca00ebe23bd32e1933d.jpg"
-          alt="Avatar Icon"
+          src={user?.photoURL}
+          alt={user?.displayName}
+          onClick={() => auth.signOut()}
         />
         <AccessTimeIcon />
       </HeaderLeft>
 
       <HeaderSearch>
         <SearchIcon />
-        <input type="text" placeholder="Search in +Ultra Channel" />
+        <input placeholder="Seach in +Ultra's Channel" />
       </HeaderSearch>
 
       <HeaderRight>
